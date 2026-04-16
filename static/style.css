@@ -1,0 +1,33 @@
+:root {
+  --bg: #f5f7fb;
+  --card: #ffffff;
+  --text: #111827;
+  --muted: #6b7280;
+  --accent: #1d4ed8;
+  --border: #d1d5db;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; font-family: "Segoe UI", sans-serif; background: var(--bg); color: var(--text); }
+.topbar { display: flex; justify-content: space-between; align-items: center; padding: 0.9rem 1.2rem; background: var(--card); border-bottom: 1px solid var(--border); }
+.brand { font-weight: 700; }
+nav { display: flex; gap: 0.7rem; }
+.nav-link { text-decoration: none; color: var(--muted); padding: 0.3rem 0.5rem; border-radius: 6px; }
+.nav-link.active, .nav-link:hover { background: var(--accent); color: #fff; }
+.container { max-width: 1200px; margin: 1rem auto; padding: 0 1rem 2rem; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; margin-bottom: 1rem; }
+.grid-2 { display: grid; grid-template-columns: repeat(auto-fit,minmax(320px,1fr)); gap: 1rem; }
+.grid-form { display: grid; gap: 0.7rem; }
+textarea, button { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 0.6rem; font: inherit; }
+button { background: var(--accent); color: #fff; cursor: pointer; border: none; max-width: 280px; }
+.checks { display: flex; flex-wrap: wrap; gap: 1rem; }
+.button-row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.secondary-button { background: #e5e7eb; color: var(--text); border: 1px solid var(--border); }
+.candidate-panel { border: 1px dashed var(--border); border-radius: 8px; padding: 0.9rem; }
+.candidate-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.5rem 1rem; }
+table { width: 100%; border-collapse: collapse; }
+th, td { border: 1px solid var(--border); padding: 0.45rem 0.6rem; text-align: left; vertical-align: top; }
+pre { white-space: pre-wrap; word-break: break-word; background: #111827; color: #e5e7eb; padding: 0.8rem; border-radius: 8px; }
+.muted { color: var(--muted); }
+.error { background: #fee2e2; color: #991b1b; padding: 0.5rem 0.7rem; border-radius: 8px; }
+.notice { background: #dbeafe; color: #1e3a8a; padding: 0.5rem 0.7rem; border-radius: 8px; }

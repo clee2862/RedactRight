@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h1>Redaction Runs</h1>
+  <table>
+    <thead>
+      <tr><th>Run ID</th><th>Source</th><th>Counts</th><th>Created</th><th>Action</th></tr>
+    </thead>
+    <tbody>
+      {% for r in runs %}
+      <tr>
+        <td>{{ r.run_id }}</td>
+        <td>{{ r.options.source_name or 'unknown' }} ({{ r.options.source_kind or 'text' }})</td>
+        <td><code>{{ r.counts_json }}</code></td>
+        <td>{{ r.created_at }}</td>
+        <td><a href="/runs/{{ r.run_id }}">Open</a></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5">No runs yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

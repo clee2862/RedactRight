@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h1>PII Redaction</h1>
+  <p class="muted">Paste text or upload a TXT/CSV/JSON/PDF file, detect likely names for review, then create a redacted output snapshot.</p>
+  {% if error %}<div class="error">{{ error }}</div>{% endif %}
+  {% if notice %}<div class="notice">{{ notice }}</div>{% endif %}
+
+  <form method="post" action="/redact" class="grid-form" enctype="multipart/form-data">
+    <input type="hidden" name="draft_token" value="{{ draft_token }}" />
+    <label>Source Text
+      <textarea name="source_text" rows="14">{{ source }}</textarea>
+    </label>
+    <label>Or Upload File (.txt/.log/.csv/.json/.pdf)
+      <input type="file" name="source_file" accept=".txt,.log,.csv,.json,.pdf,text/plain,application/json,application/pdf" />
+    </label>
+    {% if draft_token %}
+    <p class="muted">Using saved draft from <strong>{{ draft_source_name }}</strong> ({{ draft_source_kind }}). Upload a new file to replace it.</p>
+    {% endif %}
+    <label>Custom Names / Phrases to Redact
+      <textarea name="custom_terms" rows="4" placeholder="One per line, e.g.&#10;John Smith&#10;Acme Holdings">{{ custom_terms }}</textarea>
+    </label>
+
+    <div class="checks">
+      <label><input type="checkbox" name="redact_email" {% if redact_email %}checked{% endif %} /> Email</label>
+      <label><input type="checkbox" name="redact_phone" {% if redact_phone %}checked{% endif %} /> Phone</label>
+      <label><input type="checkbox" name="redact_ssn" {% if redact_ssn %}checked{% endif %} /> SSN</label>
+      <label><input type="checkbox" name="redact_credit_card" {% if redact_credit_card %}checked{% endif %} /> Credit Card</label>
+      <label><input type="checkbox" name="redact_ip_address" {% if redact_ip_address %}checked{% endif %} /> IP Address</label>
+    </div>
+
+    {% if detected_name_candidates %}
+    <section class="candidate-panel">
+      <h2>Detected Names</h2>
+      <p class="muted">Review these likely names and leave checked only the ones you want redacted.</p>
+      <div class="candidate-list">
+        {% for candidate in detected_name_candidates %}
+        <label><input type="checkbox" name="selected_detected_terms" value="{{ candidate }}" {% if candidate in selected_detected_terms %}checked{% endif %} /> {{ candidate }}</label>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    <div class="button-row">
+      <button type="submit" name="action" value="detect_names" class="secondary-button">Detect Names</button>
+      <button type="submit" name="action" value="redact">Redact & Save Run</button>
+    </div>
+  </form>
+</section>
+{% endblock %}

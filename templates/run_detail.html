@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h1>Run #{{ run.run_id }}</h1>
+  <p><strong>Created:</strong> {{ run.created_at }}</p>
+  <p><strong>Source:</strong> {{ run.options.source_name or 'unknown' }}</p>
+  <p><strong>Source Type:</strong> {{ run.options.source_kind or 'text' }}</p>
+  <p><strong>Detectors:</strong> <code>{{ run.options | tojson }}</code></p>
+  <p><strong>Counts:</strong> <code>{{ run.counts | tojson }}</code></p>
+  <p><a href="/runs/{{ run.run_id }}/download">Download Redacted Text</a></p>
+  {% if run.redacted_file_blob %}
+  <p><a href="/runs/{{ run.run_id }}/download-pdf">Download Redacted PDF</a></p>
+  {% endif %}
+  <p><a href="/runs/{{ run.run_id }}/download-report">Download Findings Report (JSON)</a></p>
+</section>
+
+<section class="grid-2">
+  <article class="card">
+    <h2>Original</h2>
+    <pre>{{ run.input_text }}</pre>
+  </article>
+  <article class="card">
+    <h2>Redacted</h2>
+    <pre>{{ run.redacted_text }}</pre>
+  </article>
+</section>
+
+<section class="card">
+  <h2>Findings</h2>
+  <pre>{{ run.findings }}</pre>
+</section>
+{% endblock %}
