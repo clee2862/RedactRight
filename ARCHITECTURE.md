@@ -9,12 +9,17 @@ RedactRight is a server-rendered FastAPI application with a thin UI layer, a red
 ```mermaid
 flowchart LR
     U[User Browser]
-    W[FastAPI + Jinja UI<br/>app/main.py]
-    R[Redaction Engine<br/>app/redactor.py]
-    P[Repository Layer<br/>app/repository.py]
+    W["FastAPI + Jinja UI
+app/main.py"]
+    R["Redaction Engine
+app/redactor.py"]
+    P["Repository Layer
+app/repository.py"]
     D[(Oracle Autonomous Database)]
-    T[/tmp/redactright_drafts]
-    A[Download Artifacts<br/>TXT / PDF / JSON]
+    T["Draft Storage
+/tmp/redactright_drafts"]
+    A["Download Artifacts
+TXT / PDF / JSON"]
 
     U -->|Open pages / submit forms| W
     W -->|Run text or PDF redaction| R
