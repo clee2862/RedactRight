@@ -1,91 +1,107 @@
-# My App Idea
+# Product Requirements
 
-> How to use:
-> 1. Copy this file: cp ~/PRD-TEMPLATE.md ~/PRD.md
-> 2. Fill in each section below (delete the examples, write your own)
-> 3. Tell Cline: "Read ~/PRD.md and build it"
-> Cline will pick the best technologies and build everything for you.
+## Product name
 
----
+RedactRight
 
-## What is your app?
+## One-sentence summary
 
-**App name**: [Give your app a name, e.g. "FoodBuddy"]
+RedactRight is a web application that helps users remove sensitive information from text and PDFs, then save and review each redaction run with downloadable artifacts.
 
-**Describe it in one sentence**: [e.g. "An app that suggests recipes based on ingredients I have at home"]
+## Problem
 
-**Who will use it?**: [e.g. "Home cooks who want to reduce food waste"]
+Teams often need to share documents quickly for review, demos, audits, or support workflows, but those documents may contain PII or confidential identifiers. Manual redaction is slow, error-prone, and difficult to verify.
 
-## What can users do?
+## Target users
 
-List the main things a user can do in your app. Keep it to 3-5 items.
+- Internal compliance and audit teams
+- Operations teams preparing documents for external sharing
+- Demo teams that need safe sample data quickly
+- Hackathon judges or reviewers who need a simple redaction workflow
 
-1. [e.g. Enter the ingredients I have in my fridge]
-2. [e.g. See recipe suggestions that match my ingredients]
-3. [e.g. Save my favorite recipes for later]
-4. [e.g. Generate a shopping list for missing ingredients]
+## Goals
 
-## What pages does the app have?
+- Make it easy to redact common sensitive data from text and PDFs
+- Provide a low-friction UI that works in a live demo
+- Preserve a history of runs for review and artifact download
+- Support both automated pattern redaction and user-guided exact-term redaction
 
-Describe each screen the user will see.
+## Non-goals
 
-- **Home page**: [e.g. A search bar where I type my ingredients, with popular recipes below]
-- **Results page**: [e.g. A grid of recipe cards showing photo, title, and cook time]
-- **Recipe detail page**: [e.g. Full recipe with ingredients list, step-by-step instructions, and a save button]
+- Full enterprise DLP coverage
+- Highly accurate named-entity recognition across all document types
+- Multi-user workflows, role-based access control, or approvals
+- Production-grade records retention and governance
 
-## How should it look?
+## Core user stories
 
-- Style: [e.g. Clean and modern / Colorful and fun / Dark and sleek / Simple and minimal]
-- Colors: [e.g. Green and white / Blue theme / Dark mode / I don't mind, let Cline decide]
-- Inspiration: [e.g. "Like Instagram but for recipes" / "Similar to Notion" / No preference]
+1. As a user, I can paste text and redact common PII in one step.
+2. As a user, I can upload a PDF and download a redacted PDF artifact.
+3. As a user, I can review likely person-name matches before applying them.
+4. As a user, I can add custom names or phrases that must be redacted exactly.
+5. As a user, I can browse previous redaction runs and inspect what changed.
 
-## Does the app need to save data?
+## Functional requirements
 
-If your app needs to remember things (users, posts, scores, etc.), describe what:
+### Input
 
-- [e.g. User accounts with name and email]
-- [e.g. Saved recipes per user]
-- [e.g. Ingredient database with categories]
+- Accept pasted text input
+- Accept uploaded `.txt`, `.log`, `.csv`, `.json`, and `.pdf` files
+- Preserve uploaded content between name detection and final redaction
 
-> If you skip this, Cline will use a simple file-based database.
-> For Oracle Database, see ~/CLAUDE.md for connection details.
+### Detection and redaction
+
+- Support detector toggles for email, phone, SSN, credit card, and IP address
+- Support custom exact-match terms supplied by the user
+- Detect likely person names and allow manual review before applying them
+- Replace matches in text with typed placeholders
+- Apply visual redactions to supported PDFs
+
+### Persistence
+
+- Save each run to Oracle
+- Store original text, redacted text, options, findings, timestamps, and file artifacts
+- List historical runs in reverse chronological order
+- Show a detail page for each run
+
+### Output
+
+- Allow users to download redacted text
+- Allow users to download redacted PDFs when applicable
+- Allow users to download a JSON findings report
+
+## User experience requirements
+
+- The main redaction flow should complete in a single page
+- The app should be understandable without training during a demo
+- The user should be able to move from upload to downloadable output in under two minutes
+
+## Success criteria
+
+- A user can redact text and view the saved run without needing the terminal
+- A user can upload a text-based PDF and receive a redacted PDF output
+- The app clearly shows what detectors ran and what findings were captured
 
 ## Demo scenario
 
-How would you show this app in a 1-2 minute demo?
+1. Open `/redact`
+2. Paste a text sample or upload a PDF with visible PII
+3. Click `Detect Names` and review suggested names
+4. Run the final redaction
+5. Open the saved run detail page
+6. Download the redacted output and findings report
 
-1. [e.g. Open the app and see the landing page]
-2. [e.g. Type "chicken, rice, garlic" in the search bar]
-3. [e.g. Three matching recipes appear as cards]
-4. [e.g. Click "Garlic Chicken Rice" to see the full recipe]
-5. [e.g. Hit the save button and see it in my favorites]
+## Risks
 
----
+- Regex-based detection can miss non-standard formats
+- Name detection may over-match capitalized phrases
+- Scanned PDFs without selectable text will not redact correctly
+- Saving source content in the database increases sensitivity and compliance burden
 
-## Complete Example
+## Future enhancements
 
-Here is a filled-in example for reference:
-
-**App name**: StudyBuddy
-
-**Describe it in one sentence**: A flashcard app that helps students study with spaced repetition
-
-**Who will use it?**: University students preparing for exams
-
-**What can users do?**
-1. Create flashcard decks for different subjects
-2. Study cards one at a time — flip to see the answer, rate how well I knew it
-3. See my study streak and progress over time
-4. Share a deck with classmates via link
-
-**Pages:**
-- Home: My decks, study streak counter, "Continue Studying" button
-- Create: Add new cards with a front (question) and back (answer)
-- Study: Shows one card at a time, tap to flip, buttons for Easy/Hard/Again
-- Stats: Simple charts showing how many cards reviewed per day
-
-**Style**: Clean, dark mode, similar to Anki but more modern
-
-**Data to save**: Flashcard decks, individual cards, study progress per card
-
-**Demo**: Open app -> see my decks -> tap "Biology 101" -> study 3 cards by flipping and rating -> go back and see my streak increase
+- OCR for scanned PDFs
+- Authentication and per-user run ownership
+- Additional detector classes such as addresses and account numbers
+- Confidence scoring and review queues
+- Bulk upload workflows
