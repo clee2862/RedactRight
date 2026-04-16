@@ -6,16 +6,25 @@ RedactRight is a server-rendered FastAPI application with a thin UI layer, a red
 
 ## System context
 
-```text
-Browser
-  -> FastAPI routes and Jinja templates
-    -> Redaction service logic
-      -> Oracle repository layer
-        -> Oracle Autonomous Database
+```mermaid
+flowchart LR
+    U[User Browser]
+    W[FastAPI + Jinja UI<br/>app/main.py]
+    R[Redaction Engine<br/>app/redactor.py]
+    P[Repository Layer<br/>app/repository.py]
+    D[(Oracle Autonomous Database)]
+    T[/tmp/redactright_drafts]
+    A[Download Artifacts<br/>TXT / PDF / JSON]
 
-Browser
-  -> FastAPI routes and Jinja templates
-    -> PDF/text artifact responses
+    U -->|Open pages / submit forms| W
+    W -->|Run text or PDF redaction| R
+    W -->|Save reviewed draft state| T
+    W -->|Persist runs| P
+    P --> D
+    D --> P
+    W -->|Return run history and detail pages| U
+    W -->|Download responses| A
+    A --> U
 ```
 
 ## Main components
@@ -83,6 +92,31 @@ Stored data includes:
 - Creation timestamp
 
 ## Request flow
+
+### End-to-end flow diagram
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant UI as FastAPI UI
+    participant Engine as Redaction Engine
+    participant Repo as Repository
+    participant DB as Oracle DB
+
+    User->>UI: Submit text or upload file
+    alt Detect names first
+        UI->>Engine: detect_person_name_candidates(...)
+        UI-->>User: Return reviewed candidate list
+        User->>UI: Submit selected names
+    end
+    UI->>Engine: redact_text(...) or redact_pdf(...)
+    Engine-->>UI: RedactionResult
+    UI->>Repo: create_run(...)
+    Repo->>DB: INSERT redaction_runs
+    DB-->>Repo: run_id
+    Repo-->>UI: run_id
+    UI-->>User: Redirect to /runs/{run_id}
+```
 
 ### Standard text redaction
 
